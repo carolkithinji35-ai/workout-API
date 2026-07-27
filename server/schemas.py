@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validates, ValidationError
+from marshmallow import Schema, fields, validate, validates, ValidationError
 
 
 class WorkoutExerciseSchema(Schema):
@@ -7,9 +7,9 @@ class WorkoutExerciseSchema(Schema):
     workout_id = fields.Int(required=True)
     exercise_id = fields.Int(required=True)
 
-    sets = fields.Int(required=True)
-    reps = fields.Int(required=True)
-    duration = fields.Int()
+    sets = fields.Int(required=True, validate=validate.Range(min=1))
+    reps = fields.Int(required=True, validate=validate.Range(min=1))
+    duration = fields.Int(allow_none=True, validate=validate.Range(min=1))
 
     exercise = fields.Nested(
         "ExerciseSchema",
@@ -83,4 +83,3 @@ exercises_schema = ExerciseSchema(many=True)
 
 workout_exercise_schema = WorkoutExerciseSchema()
 workout_exercises_schema = WorkoutExerciseSchema(many=True)
-
