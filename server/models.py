@@ -17,9 +17,9 @@ class Workout(db.Model):
 
     @validates("name")
     def validate_name(self, key, value):
-        if not value.strip():
+        if not isinstance(value, str) or not value.strip():
             raise ValueError("Workout name cannot be empty.")
-        return value
+        return value.strip()
 
 
 class Exercise(db.Model):
@@ -37,16 +37,16 @@ class Exercise(db.Model):
 
     @validates("name")
     def validate_name(self, key, value):
-        if not value.strip():
+        if not isinstance(value, str) or not value.strip():
             raise ValueError("Exercise name cannot be empty.")
-        return value
+        return value.strip()
 
     @validates("description")
     def validate_description(self, key, value):
-        if len(value.strip()) < 10:
+        if not isinstance(value, str) or len(value.strip()) < 10:
             raise ValueError(
                 "Description must be at least 10 characters long.")
-        return value
+        return value.strip()
 
 
 class WorkoutExercise(db.Model):
@@ -68,13 +68,13 @@ class WorkoutExercise(db.Model):
         "exercises.id"), nullable=False)
     sets = db.Column(db.Integer, nullable=False)
     reps = db.Column(db.Integer, nullable=False)
-    duration = db.Column(db.Integer, nullable=True)  # Duration in seconds
+    duration = db.Column(db.Integer, nullable=True)
 
     workout = db.relationship("Workout", back_populates="exercises")
     exercise = db.relationship("Exercise", back_populates="workouts")
 
     @validates("sets", "reps", "duration")
     def validate_numbers(self, key, value):
-        if value is not None and value <= 0:
+        if value is not None and (not isinstance(value, int) or isinstance(value, bool) or value <= 0):
             raise ValueError(f"{key.capitalize()} must be greater than zero.")
         return value
