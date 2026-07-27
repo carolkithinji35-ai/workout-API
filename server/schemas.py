@@ -20,18 +20,15 @@ class WorkoutExerciseSchema(Schema):
     def validate_sets(self, value, **kwargs):
         if value <= 0:
             raise ValidationError("Sets must be greater than zero.")
+    @validates("reps")
+    def validate_reps(self, value, **kwargs):
+        if value <= 0:
+            raise ValidationError("Reps must be greater than zero.")
 
-
-@validates("reps")
-def validate_reps(self, value, **kwargs):
-    if value <= 0:
-        raise ValidationError("Reps must be greater than zero.")
-
-
-@validates("duration")
-def validate_duration(self, value, **kwargs):
-    if value is not None and value <= 0:
-        raise ValidationError("Duration must be greater than zero.")
+    @validates("duration")
+    def validate_duration(self, value, **kwargs):
+        if value is not None and value <= 0:
+            raise ValidationError("Duration must be greater than zero.")
 
 class WorkoutSchema(Schema):
     id = fields.Int(dump_only=True)
